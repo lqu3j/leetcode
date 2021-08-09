@@ -1,39 +1,35 @@
 package main
 
-import "log"
+import (
+	"log"
+)
 
 func main() {
 	log.Println(isMatch("abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb", "**aa*****ba*a*bb**aa*ab****a*aaaaaa***a*aaaa**bbabb*b*b**aaaaaaaaa*a********ba*bbb***a*ba*bb*bb**a*b*bb"))
 }
 
 func isMatch(s string, p string) bool {
-	sLen := len(s)
-	pLen := len(p)
-	sIndex := 0
-	pIndex := 0
-
-	for pIndex < pLen {
-		if p[pIndex] == '*' {
-			for pIndex < pLen && p[pIndex] == '*' {
-				pIndex++
-			}
-			for sIndex < sLen {
-				if pIndex == pLen && sIndex == sLen {
-					return true
-				}
-				if sIndex < sLen && pIndex < pLen && isMatch(s[sIndex:], p[pIndex:]) {
-					return true
-				}
-				sIndex++
-			}
+	m, n := len(s), len(p)
+	dp := make([][]bool, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]bool, n+1)
+	}
+	dp[0][0] = true
+	for i := 1; i <= n; i++ {
+		if p[i-1] == '*' {
+			dp[0][i] = true
 		} else {
-			if (sIndex < sLen && s[sIndex] == p[pIndex]) || p[pIndex] == '?' {
-				sIndex++
-				pIndex++
-			} else {
-				return false
+			break
+		}
+	}
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if p[j-1] == '*' {
+				dp[i][j] = dp[i][j-1] || dp[i-1][j]
+			} else if p[j-1] == '?' || s[i-1] == p[j-1] {
+				dp[i][j] = dp[i-1][j-1]
 			}
 		}
 	}
-	return pIndex == pLen && sIndex == sLen
+	return dp[m][n]
 }
