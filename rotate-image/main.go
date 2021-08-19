@@ -15,21 +15,10 @@ func main() {
 
 func rotate(matrix [][]int) {
 	n := len(matrix)
-
-	oldX, oldY := 0, 0
-	newX, newY := 0, 0
-	for i := 0; i < n; i++ {
-		for j := 0; j < n; j++ {
-			if oldX == i && oldY == j {
-				matrix[newX][newY] = matrix[j][n-i-1]
-			} else {
-				matrix[i][j] = matrix[j][n-i-1]
-			}
-			oldX, oldY = j, n-i-1
-			newX, newY = i, j
-
-			log.Println(oldX, oldY, newX, newY)
-
+	for i := 0; i < n/2; i++ {
+		for j := 0; j < (n+1)/2; j++ {
+			matrix[i][j], matrix[n-j-1][i], matrix[n-i-1][n-j-1], matrix[j][n-i-1] =
+				matrix[n-j-1][i], matrix[n-i-1][n-j-1], matrix[j][n-i-1], matrix[i][j]
 		}
 	}
 }
