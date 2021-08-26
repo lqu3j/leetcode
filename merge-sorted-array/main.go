@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	array := []int{0, 2, 3, 0, 0, 0}
-	merge(array, 3, []int{2, 5, 6}, 3)
+	array := []int{1, 0}
+	merge(array, 1, []int{1}, 1)
 
 	log.Println(array)
 }
@@ -26,6 +26,8 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 	length := m
 	count := 0
 	for index1 < m+n && index2 < n {
+		log.Println(nums1, index1, nums2[index2])
+
 		if nums1[index1] >= nums2[index2] {
 			if count < m {
 				move(nums1, length, index1)
@@ -41,10 +43,10 @@ func merge(nums1 []int, m int, nums2 []int, n int) {
 				index1++
 			} else {
 				nums1[index1] = nums2[index2]
+				index1++
 				index2++
 			}
 		}
-		// log.Println(num1, index1)
 	}
 }
 
