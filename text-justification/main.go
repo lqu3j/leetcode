@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"log"
+	"strings"
 )
 
 func main() {
@@ -27,19 +30,46 @@ func fullJustify(words []string, maxWidth int) []string {
 			if sum+wordLen+1 <= maxWidth {
 				sum = sum + wordLen + 1
 			} else {
-				results = append(results, join(words[begin:index], maxWidth))
-				sum = 0
+				results = append(results, join(words[begin:index], sum, maxWidth))
 				begin = index
+				sum = wordLen
 			}
 		}
 		index++
 	}
 	if begin < length {
-		results = append(results, join(words[begin:length], maxWidth))
+		results = append(results, strings.Join(words[begin:length], " ")+strings.Repeat(" ", maxWidth-sum))
 	}
 	return results
 }
 
-func join(array []string, maxWidth int) string {
-	lengt := len(array)
+func join(array []string, currentLen int, maxWidth int) string {
+	length := len(array)
+	subLength := maxWidth - currentLen
+
+	if length == 1 {
+		return fmt.Sprintf("%v%v", array[0], strings.Repeat(" ", subLength))
+	}
+	if subLength == 0 {
+		return strings.Join(array, " ")
+	}
+
+	quotient := subLength / (length - 1)
+	remainder := subLength % (length - 1)
+
+	buf := bytes.NewBuffer(make([]byte, 0, maxWidth))
+	for i := 0; i < length; i++ {
+		if i < length-1 {
+			count := quotient + 1
+			if remainder > 0 {
+				count++
+			}
+			remainder--
+			fmt.Fprintf(buf, "%v%v", array[i], strings.Repeat(" ", count))
+		} else {
+			fmt.Fprintf(buf, "%v", array[i])
+		}
+	}
+
+	return buf.String()
 }
